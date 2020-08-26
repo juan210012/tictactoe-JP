@@ -13,14 +13,14 @@
     <body>
         <div class="mainPart">
             <h1 class="header">Welcome</h1>
-            <form method="post" action="login.php">
+            <form method="post" action="PHP/login.php">
                 <label for="userName">User Name</label><br>
                 <input type="text" id="userName" name="userName"><br>
                 <label for="password">Password</label><br>
                 <input type="text" id="password" name="password"><br><br>
-                <input type="submit" value="Log In"><br>
+                <input class="submitButton" type="submit" value="Log In"><br>
             </form>
-            <a href="PHP/createAccount.php" title="Create New Account">Create New Account</a>
+            <a href="PHP/createAccount.php" title="Create New Account">Create New Account</a> <b>||</b>
             <a href="PHP/guest.php" title="Play as Guest">Play as Guest</a>
         </div>
         <script src="JS/scriptIndex.js"></script>

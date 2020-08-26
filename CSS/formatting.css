@@ -28,6 +28,36 @@ html, body {
     letter-spacing: 2px;
 }
 
-a {
+.submitButton {
+    background: #d93434;
+    background-image: -webkit-linear-gradient(top, #d93434, #b82b5a);
+    background-image: -moz-linear-gradient(top, #d93434, #b82b5a);
+    background-image: -ms-linear-gradient(top, #d93434, #b82b5a);
+    background-image: -o-linear-gradient(top, #d93434, #b82b5a);
+    background-image: linear-gradient(to bottom, #d93434, #b82b5a);
+    -webkit-border-radius: 28;
+    -moz-border-radius: 28;
+    border-radius: 28px;
+    font-family: Arial;
+    color: #ffffff;
+    font-size: 15px;
+    padding: 5px 10px 5px 10px;
     text-decoration: none;
 }
+.submitButton:hover {
+    background: #8f1ec7;
+    background-image: -webkit-linear-gradient(top, #8f1ec7, #55107d);
+    background-image: -moz-linear-gradient(top, #8f1ec7, #55107d);
+    background-image: -ms-linear-gradient(top, #8f1ec7, #55107d);
+    background-image: -o-linear-gradient(top, #8f1ec7, #55107d);
+    background-image: linear-gradient(to bottom, #8f1ec7, #55107d);
+    text-decoration: none;
+}
+
+a {
+    text-decoration: none;
+    color: blue;
+}
+a:visited {color: blue;}
+a:hover {color: purple}
+a:active {color: black;}
