@@ -15,9 +15,9 @@
             <h1 class="header">Welcome</h1>
             <form method="post" action="PHP/login.php">
                 <label for="userName">User Name</label><br>
-                <input type="text" id="userName" name="userName"><br>
+                <input type="text" id="userName" name="userName" required><br>
                 <label for="password">Password</label><br>
-                <input type="text" id="password" name="password"><br><br>
+                <input type="password" id="password" name="password" required><br><br>
                 <input class="submitButton" type="submit" value="Log In"><br>
             </form>
             <a href="PHP/createAccount.php" title="Create New Account">Create New Account</a> <b>||</b>
