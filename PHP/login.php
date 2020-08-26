@@ -12,7 +12,9 @@
 
     if (password_verify($password, $hash)) {
         header("Location: https://estupiju.dev.fast.sheridanc.on.ca/tictactoe/");
+        die();
     } else {
         header("Location: https://estupiju.dev.fast.sheridanc.on.ca/tictactoe/");
+        die();
     }
 ?>
