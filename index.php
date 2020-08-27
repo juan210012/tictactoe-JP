@@ -1,3 +1,9 @@
+<?php
+if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true){
+    header("location: ../HTML/TicTacToeA2.html");
+    exit;
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -20,7 +26,7 @@
                 <input class="submitButton" type="submit" value="Log In"><br><br>
             </form>
             <a href="HTML/createAccount.html" title="Create New Account">Create New Account</a> <b>||</b>
-            <a href="PHP/guest.php" title="Play as Guest">Play as Guest</a>
+            <a href="HTML/TicTacToeA2.html" title="Play as Guest">Play as Guest</a>
         </div>
         <p class="copyright">© Juan Estupinan 2020. All Rights Reserved.</p>
     </body>
