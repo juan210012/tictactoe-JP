@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Tic Tac Toe!</title>
+        <meta charset="utf-8">
+        <link rel="stylesheet" href="../CSS/formatting.css" type="text/css">
+        <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Quicksand&display=swap" rel="stylesheet">
+    </head>
+    <body>
+        <h1 class="title">Tic Tac Toe</h1>
+        <p  class="myName">A game experience by <span>Juan Estupinan</span></p>
+        <div class="mainPart2">
+            <h1 class="header">Create New Account!</h1>
+            <form method="post" action="../PHP/create.php">
+                <label for="userName">User Name</label><br>
+                <input type="text" id="userName" name="userName" required><br>
+                <label for="password">Password</label><br>
+                <input type="password" id="password" name="password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters" required><br><br>
+                <label><b>Password MUST contain:</b><br>One number<br>One uppercase and lowercase letter<br>At least 8 or more characters</label><br><br>
+                <input class="submitButton" type="submit" value="Create Account"><br><br>
+            </form>
+            <p><em>All passwords are proccessed through the use of<br>the bcrypt encryption algorithm for maximum safety</em></p>
+        </div>
+        <p class="copyright">© Juan Estupinan 2020. All Rights Reserved.</p>
+    </body>
+</html>
