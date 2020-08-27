@@ -1,5 +1,5 @@
 <?php
-    session_start();
+    //session_start();
     require("connect.php");
 
     $userName = $_POST["userName"];
@@ -7,9 +7,9 @@
 
     $command = "SELECT `hash` FROM `userInfo` WHERE `userName`=?";
     $stmt = $dbConn->prepare($command);
-    $execOk = $stmt->execute([$username]);
+    $execOk = $stmt->execute([$userName]);
 
-    $hash = $stmt->fetch();
+    $hash = $stmt->fetchColumn();
 
     if (password_verify($password, $hash)) {
         session_start();
