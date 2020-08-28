@@ -16,12 +16,16 @@
                 <label for="userName">User Name</label><br>
                 <input type="text" id="userName" name="userName" required><br>
                 <label for="password">Password</label><br>
-                <input type="password" id="password" name="password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters" required><br><br>
+                <input type="password" id="password" name="password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters" required><br>
+                <label for="confirmPassword">Confirm Password</label><br>
+                <input type="password" id="confirmPassword" name="confirmPassword" title="confirmPassword" required><br>
+                <label id="checkMatched"></label><br><br>
                 <label><b>Password MUST contain:</b><br>One number<br>One uppercase and lowercase letter<br>At least 8 or more characters</label><br><br>
-                <input class="submitButton" type="submit" value="Create Account"><br><br>
+                <input class="submitButton" type="submit" value="Create Account" disabled><br><br>
             </form>
             <p><em>All passwords are proccessed through the use of<br>the bcrypt encryption algorithm for maximum safety</em></p>
         </div>
         <p class="copyright">© Juan Estupinan 2020. All Rights Reserved.</p>
     </body>
+    <script src="../JS/confirmPass.js"></script>
 </html>
