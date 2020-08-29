@@ -17,7 +17,7 @@
         }
     }
     if ($taken == 0) {
-        $command = "INSERT INTO `userInfo` (`id`, `userName`, `hash`, `wins`) VALUES (NULL, ?, ?, 0)";
+        $command = "INSERT INTO `userInfo` (`id`, `userName`, `hash`, `wins`, `nWins`, `aWins`) VALUES (NULL, ?, ?, 0, 0, 0)";
         $stmt = $dbConn->prepare($command);
         $hash = password_hash($password, PASSWORD_DEFAULT);
         $execOk = $stmt->execute([$userName, $hash]);
