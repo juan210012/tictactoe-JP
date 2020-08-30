@@ -17,7 +17,7 @@
         // Store data in session variables
         $_SESSION["loggedin"] = true;
         $_SESSION["userName"] = $userName;
-        header("location: ../HTML/TicTacToeA2.html");
+        header("location: TicTacToeA2.php");
         exit();
     } else {
         header("location: ../HTML/errorPage.html");
