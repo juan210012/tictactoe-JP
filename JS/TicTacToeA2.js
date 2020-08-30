@@ -7,7 +7,7 @@ var message = document.getElementById("message");
 // Gets element of winner ID
 var winner = document.getElementById("winner");
 // Gets all the elements in table cells
-var board = document.getElementsByTagName("td");
+var board = document.getElementsByClassName("cellPart");
 
 // assuming we index the 9 tic tac toe cells from left to right, top to
 // bottom, as 0-8, these would be all of the winning combinations:

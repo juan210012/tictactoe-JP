@@ -1,5 +1,6 @@
 <?php
   require("connect.php");
+  session_start();
 ?>
 <!DOCTYPE HTML>
 <!--
@@ -16,6 +17,13 @@ Student Number: 991593151
 <!-- main content -->
   <body>
     <h1 class="title">Tic Tac Toe</h1>
+    <?php
+      if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true){
+        echo "<a class='logout' href='logout.php' title='Log Out'>Log Out</a>";
+      } else {
+        echo "<a class='logout' href='logout.php' title='Log In'>Log In</a> <a class='logout' href='../HTML/createAccount.html' title='Creat an Account'>Create an Account</a>";
+      }
+    ?>
     <p class="myName">A game experience by <span>Juan Estupinan</span></p>
     <!-- game board -->
     <div class="board">
@@ -26,37 +34,37 @@ Student Number: 991593151
         $execOk = $stmt->execute([$_SESSION["userName"]]);
 
         if($execOk) {
-          echo "<h2>Welcome " . $stmt->fetchColumn() . "</h2>";
+          echo "<h2>Welcome " . $stmt->fetchColumn() . "</h2><br>";
         }
       }
     ?>  
-      <table>
+      <table class="board">
         <tr>
-          <td></td>
-          <td></td>
-          <td></td>
+          <td class="cellPart"></td>
+          <td class="cellPart"></td>
+          <td class="cellPart"></td>
         </tr>
         <tr>
-          <td></td>
-          <td></td>
-          <td></td>
+          <td class="cellPart"></td>
+          <td class="cellPart"></td>
+          <td class="cellPart"></td>
         </tr>
         <tr>
-          <td></td>
-          <td></td>
-          <td></td>
+          <td class="cellPart"></td>
+          <td class="cellPart"></td>
+          <td class="cellPart"></td>
         </tr>
       </table>
       <!--
         TODO: ADD A DIFFICULTY AND X OR O SELECTION SYSTEM
       -->
       <!-- play information and controls -->
-      <p>Player <span id="player"></span> Go!<br>
-      <button id="reset">Reset Game</button>
+      <p>Player <span id="player"></span> Go!<br><br>
+      <button id="reset">Reset Game</button><br>
       </p>
     </div>
-    <div>
-      <h3>Leader Boards</h3>
+    <div class="leaderboard">
+      <h2>Leader Boards</h2>
       <table>
         <tr>
           <th>Position</th>
@@ -93,20 +101,24 @@ Student Number: 991593151
         ?>
       </table>
     </div>
-          <h3>Your Stats</h3>
-    <?php
-      if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true){
-        $command = "SELECT `userName`, `wins`, `nWins`, `aWins`, `totalWins` FROM `userInfo` WHERE `userName`=?";
-        $stmt = $dbConn->prepare($command);
-        $execOk = $stmt->execute([$_SESSION["userName"]]);
+    <div class="yourStats">
+      <?php
+        if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true){
+          $command = "SELECT `userName`, `wins`, `nWins`, `aWins`, `totalWins` FROM `userInfo` WHERE `userName`=?";
+          $stmt = $dbConn->prepare($command);
+          $execOk = $stmt->execute([$_SESSION["userName"]]);
 
-        if($execOk) {
-          while($rows = $stmt->fetch()) {
-            echo "<p> " . $playerPos . " " . $_SESSION["userName"] . " Easy Wins: " . $rows["wins"] . " Normal Wins: " . $rows["nWins"] . " Hard Wins: " . $rows["aWins"] . " Total Wins: " . $rows["totalWins"] . "</p>";
+          if($execOk) {
+            while($rows = $stmt->fetch()) {
+              echo "<h2>Your Stats</h2>";
+              echo "<p> <b>#" . $playerPos . "</b> <span>" . $_SESSION["userName"] . "</span> &#8611; <b> Easy Wins:</b> " . $rows["wins"] . " <b>|| Normal Wins:</b> " . $rows["nWins"] . " <b>|| Hard Wins: </b>" . $rows["aWins"] . " <b>|| Total Wins:</b> " . $rows["totalWins"] . "</p>";
+            }
           }
+        } else {
+          echo "<br><br><h2>If you sign up, you can track your wins and compete against others in the leaderboard!</h2>";
         }
-      }
-    ?>
+      ?>
+    </div>
     <!-- footer -->
     <p class="copyright">© Juan Estupinan 2020. All Rights Reserved.</p>
 
