@@ -1,7 +1,7 @@
 <?php
 session_start();
 if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true){
-    header("location: PHP/TicTacToeA2.html");
+    header("location: PHP/TicTacToeA2.php");
     exit;
 }
 ?>
