@@ -7,7 +7,7 @@
     $command = "SELECT `userName` FROM `userInfo`";
     $stmt = $dbConn->prepare($command);
     $execOk = $stmt->execute();
-
+    
     while($users = $stmt->fetch()) {
         if ($users["userName"]==$userName) {
             $taken++;
@@ -17,7 +17,7 @@
         }
     }
     if ($taken == 0) {
-        $command = "INSERT INTO `userInfo` (`id`, `userName`, `hash`, `wins`, `nWins`, `aWins`) VALUES (NULL, ?, ?, 0, 0, 0)";
+        $command = "INSERT INTO `userInfo` (`id`, `userName`, `hash`, `wins`, `nWins`, `aWins`, `totalWins`) VALUES (NULL, ?, ?, 0, 0, 0, 0)";
         $stmt = $dbConn->prepare($command);
         $hash = password_hash($password, PASSWORD_DEFAULT);
         $execOk = $stmt->execute([$userName, $hash]);

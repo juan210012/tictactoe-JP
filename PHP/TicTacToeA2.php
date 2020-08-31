@@ -78,7 +78,7 @@ Student Number: 991593151
       </div>
       <!-- play information and controls -->
       <p>Player <span id="player"></span> Go!<br><br>
-      <button id="reset">Reset Game</button><br>
+      <button id="reset">Reset Game</button>&nbsp;<button id="changeDiff">Change Player/Difficulty</button><br>
       </p>
     </div>
     <div class="container">

@@ -139,6 +139,11 @@ function displayWin(show) {
         document.getElementById("overlay").style.display = "none";
     }
 }
+document.getElementById("changeDiff").addEventListener("click", function () {
+    document.getElementsByClassName("container2")[0].style.visibility = "visible";
+    document.getElementById("overlay").style.display = "block";
+    resetGame();
+});
 
 document.getElementById("confirm").addEventListener("click", playerDifficulty);
 function playerDifficulty() {
