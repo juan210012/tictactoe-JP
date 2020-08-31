@@ -16,6 +16,7 @@ var winSets = [[0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8],
 // X always gets to go first
 var player;
 var selectedPlayer;
+var winner;
 
 // keep track of how many cells are empty at any time
 var empty = 9;
@@ -85,6 +86,8 @@ function checkWin() {
                 message.style.display = 'block';
                 gameOver = true;
                 winner.innerHTML = player+" Wins!";
+                winner = player;
+                sendPHP();
                 displayWin(true);
                 break;
         }
@@ -97,7 +100,20 @@ function checkWin() {
         displayWin(true);
     } 
 }
-
+function sendPHP() {
+    if (winner === selectedPlayer) {
+        if (difficulty === "easy") {
+            $.get("../PHP/PHP-Wins/easyWin.php");
+            return false;
+        } else if (difficulty === "normal") {
+            $.get("../PHP/PHP-Wins/normalWin.php");
+            return false;
+        } else if (difficulty === "hard") {
+            $.get("../PHP/PHP-Wins/hardWin.php");
+            return false;
+        }
+    }
+}
 //Event listener for reset game button
 document.getElementById("reset").addEventListener("click", resetGame);
 //event listener for end message block. It dismisses end message pops up that says "click anywhere in the box..."
