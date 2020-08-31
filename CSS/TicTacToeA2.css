@@ -79,7 +79,7 @@ html {
      
 }
 
-#reset {
+button {
     background: #d93434;
     background-image: -webkit-linear-gradient(top, #d93434, #b82b5a);
     background-image: -moz-linear-gradient(top, #d93434, #b82b5a);
@@ -95,7 +95,7 @@ html {
     padding: 5px 10px 5px 10px;
     text-decoration: none;
 }
-#reset:hover {
+button:hover {
     background: #8f1ec7;
     background-image: -webkit-linear-gradient(top, #8f1ec7, #55107d);
     background-image: -moz-linear-gradient(top, #8f1ec7, #55107d);
@@ -112,6 +112,33 @@ html {
     justify-content: space-around;
     align-items: flex-start;
     align-content: space-around;
+}
+
+.container2 {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    align-items: flex-start;
+    align-content: space-around;
+    background-color: #f9ecf2;
+    border: 1px solid #660066;
+    border-radius: 5px;
+    box-shadow: 1px 1px 5px black, -1px -1px 5px white;
+    font-weight: bold;
+    height: 20%;
+    margin: 0 auto;
+    padding: 20px;
+    position: absolute;
+    top: 30%;
+    left: 25%;
+    width: 50%;
+    z-index: 200 !important;
+}
+@media only screen and (max-width: 900px) {
+    .container2 {
+        height: 30%;
+    }
 }
 
 /* formatting for game board table */
@@ -149,32 +176,22 @@ html {
 
 
 /* the message box that appears with game results, hidden by default */
-#message {
-    background-color: #f9ecf2;
-    border: 1px solid #660066;
-    border-radius: 5px;
-    box-shadow: 1px 1px 5px black, -1px -1px 5px white;
-    display: none;
-    font-weight: bold;
-    height: 30%;
-    margin: 0 auto;
-    padding: 20px;
-    position: relative;
-    top: 50px;
-    width: 80%;
-    z-index: 200;
+.container2.message {
+    visibility: hidden;
+    align-items: center;
+    flex-direction: column;
+    height: 15%;
 }
 
 /* covers the entire page in a semi-transparent grey, hidden by default */
 #overlay {
     background-color: rgba(20, 20, 20, 0.4);
-    display: none;
     height: 100%;
     left: 0;
     position: fixed;
     top: 0;
     width: 100%;
-    z-index: 100;
+    z-index: 100 !important;
 }
 a {
     text-decoration: none;

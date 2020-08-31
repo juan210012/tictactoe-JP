@@ -3,7 +3,7 @@ Name: Juan Estupinan
 Student Number: 991593151
 */
 // Gets element by message ID
-var message = document.getElementById("message");
+var message = document.getElementsByName("message")[0];
 // Gets element of winner ID
 var winner = document.getElementById("winner");
 // Gets all the elements in table cells
@@ -14,7 +14,8 @@ var board = document.getElementsByClassName("cellPart");
 var winSets = [[0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 4, 8], [2, 4, 6]];
 
 // X always gets to go first
-var player = "X";
+var player;
+var selectedPlayer;
 
 // keep track of how many cells are empty at any time
 var empty = 9;
@@ -22,6 +23,8 @@ var empty = 9;
 // keep track of game status - false if still playing
 var gameOver = false;
 
+
+var difficulty
 /* Function resetGame() is called when user clicks on the "game reset" button
  1. sets content of all 9 cells to nothing
  2. sets the starting player (this version, X always starts the game)
@@ -29,6 +32,7 @@ var gameOver = false;
  4. resets the number of empty cells to 9
  5. sets the game over flag to false to indicate that the game is in progress
  */
+
 function resetGame() {
 
     //for loop checks every cell and sets it to nothing
@@ -36,7 +40,7 @@ function resetGame() {
         board[i].innerHTML = "";
     }
     //Sets parameters to default values
-    player = "X";
+    player = selectedPlayer;
     gameOver = false;
     empty = 9;
     //Sets the player _ Go! to X
@@ -93,12 +97,14 @@ function checkWin() {
         displayWin(true);
     } 
 }
+
 //Event listener for reset game button
 document.getElementById("reset").addEventListener("click", resetGame);
 //event listener for end message block. It dismisses end message pops up that says "click anywhere in the box..."
 message.addEventListener("click", function() {
     displayWin(false);
 });
+
 //event listener with for loop that checks the board to see which cell got clicked and inputs it to the cellClicked function.
 for ( i = 0; i < board.length; i++) {
     board[i].addEventListener("click", function() {
@@ -110,10 +116,35 @@ for ( i = 0; i < board.length; i++) {
 // displayWin(false) hides)
 function displayWin(show) {
     if (show) {
-        message.style.display = "block";
+        message.style.visibility = "visible";
         document.getElementById("overlay").style.display = "block";
     } else {
-        message.style.display = "none";
+        message.style.visibility = "hidden";
         document.getElementById("overlay").style.display = "none";
+    }
+}
+
+document.getElementById("confirm").addEventListener("click", playerDifficulty);
+function playerDifficulty() {
+    if ((document.getElementById("Xselect").checked == true || document.getElementById("Oselect").checked == true) 
+        && (document.getElementById("easy").checked == true || document.getElementById("normal").checked == true ||
+        document.getElementById("hard").checked == true)) {
+        document.getElementsByClassName("container2")[0].style.visibility = "hidden";
+        document.getElementById("overlay").style.display = "none";
+        for (i=0; i<document.getElementsByName("playerSelect").length; i++) {
+            if (document.getElementsByName("playerSelect")[i].checked) {
+                player = document.getElementsByName("playerSelect")[i].value;
+                selectedPlayer = document.getElementsByName("playerSelect")[i].value;
+                document.getElementById("player").innerHTML = selectedPlayer;
+            }
+        }
+        for (i=0; i<document.getElementsByName("difficulty").length; i++) {
+            if (document.getElementsByName("difficulty")[i].checked) {
+                difficulty = document.getElementsByName("difficulty")[i].value;
+            }
+        }
+    } else {
+        document.getElementsByClassName("break")[0].innerHTML = "Please Select a Player and Difficulty";
+        document.getElementsByClassName("break")[0].style.color = "red";
     }
 }

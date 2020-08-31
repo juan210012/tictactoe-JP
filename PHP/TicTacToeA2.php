@@ -12,6 +12,7 @@ Student Number: 991593151
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Quicksand&display=swap" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="../CSS/TicTacToeA2.css">
+    <script type="text/javascript" src="jquery.min.js"></script>
     <meta charset="utf-8">
   </head>
 <!-- main content -->
@@ -55,9 +56,26 @@ Student Number: 991593151
           <td class="cellPart"></td>
         </tr>
       </table>
-      <!--
-        TODO: ADD A DIFFICULTY AND X OR O SELECTION SYSTEM
-      -->
+      <div class="container2">
+        <div class="item1">
+          <h3>Select Player X or O</h3>
+          <input type="radio" id="Xselect" name="playerSelect" value="X">
+          <label for="Xselect">X</label>
+          <input type="radio" id="Oselect" name="playerSelect" value="O">
+          <label for="Oselect">O</label>
+        </div>
+        <div class="item2">
+          <h3>Select Difficulty</h3>
+          <input type="radio" id="easy" name="difficulty" value="easy">
+          <label for="easy">Easy</label>
+          <input type="radio" id="normal" name="difficulty" value="normal">
+          <label for="normal">Normal</label>
+          <input type="radio" id="hard" name="difficulty" value="hard">
+          <label for="hard">Hard</label>
+        </div>
+        <div class="break"></div><br>
+        <div class="item3"><button id="confirm">Confirm</button></div>
+      </div>
       <!-- play information and controls -->
       <p>Player <span id="player"></span> Go!<br><br>
       <button id="reset">Reset Game</button><br>
@@ -125,7 +143,7 @@ Student Number: 991593151
       <p class="copyright">© Juan Estupinan 2020. All Rights Reserved.</p>
     </div>
     <!-- hidden elements used for displaying results -->
-    <div id="message">
+    <div class="container2 message" name="message">
       <p>GAME OVER!</p>
         <h3 id="winner"></h3>
       <p>&mdash;click anywhere in the box to dismiss this message&mdash;</p>
