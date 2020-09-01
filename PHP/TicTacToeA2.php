@@ -41,19 +41,19 @@ Student Number: 991593151
     ?>  
       <table class="board">
         <tr>
-          <td class="cellPart"></td>
-          <td class="cellPart"></td>
-          <td class="cellPart"></td>
+          <td class="cellPart" value="10"></td>
+          <td class="cellPart" value="11"></td>
+          <td class="cellPart" value="12"></td>
         </tr>
         <tr>
-          <td class="cellPart"></td>
-          <td class="cellPart"></td>
-          <td class="cellPart"></td>
+          <td class="cellPart" value="20"></td>
+          <td class="cellPart" value="21"></td>
+          <td class="cellPart" value="22"></td>
         </tr>
         <tr>
-          <td class="cellPart"></td>
-          <td class="cellPart"></td>
-          <td class="cellPart"></td>
+          <td class="cellPart" value="30"></td>
+          <td class="cellPart" value="31"></td>
+          <td class="cellPart" value="32"></td>
         </tr>
       </table>
       <div class="container2">
