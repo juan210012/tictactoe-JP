@@ -34,8 +34,17 @@ var empty = 9;
 // keep track of game status - false if still playing
 var gameOver = false;
 
-
 var difficulty;
+
+var boardVals = 10;
+for (i=0;i<board.length;i++) {
+    board[i].value = boardVals;
+    if (boardVals === 12 || boardVals === 22 || boardVals === 33) {
+        boardVals = boardVals+8;
+    } else {
+        boardVals++;
+    }
+}
 /* Function resetGame() is called when user clicks on the "game reset" button
  1. sets content of all 9 cells to nothing
  2. sets the starting player (this version, X always starts the game)
@@ -80,7 +89,9 @@ function cellClicked(cell) {
     if (cell.innerHTML === "" && empty >= 0 && gameOver === false) {
         cell.innerHTML = player;
         empty -= 1;
-        switch (document.getElementsByClassName("cellPart").value) {
+        //look at this
+        
+        switch (cell.value) {
             case 10:
                 if (player === "X") {
                     cellClickedArray[0][0] = 1;
@@ -133,6 +144,13 @@ function cellClicked(cell) {
         player = (player === "X") ? "O" : "X";
         //Changes the "Player _ Go!" to the appropriate turn.
         document.getElementById("player").innerHTML = player;
+        
+        /*
+------------------------------------TODO: MAKE LOADING BAR AND THE REST OF AI----------------------------------------------------
+        */
+       if (aiPlayer === player) {
+        setTimeout(aiTurn, 1000);
+       }
     }
 }
 
@@ -173,10 +191,12 @@ message.addEventListener("click", function() {
 });
 
 //event listener with for loop that checks the board to see which cell got clicked and inputs it to the cellClicked function.
-for ( i = 0; i < board.length; i++) {
-    board[i].addEventListener("click", function() {
-        cellClicked(this);
-    });
+if (player === selectedPlayer) {
+    for ( i = 0; i < board.length; i++) {
+        board[i].addEventListener("click", function() {
+            cellClicked(this);
+        });
+    }
 }
 // displays the results window with the winner inside it: the method will
 // either show the results or hide them (displayWin(true) shows and 
@@ -227,13 +247,13 @@ function playerDifficulty() {
             if (document.getElementsByName("playerSelect")[i].checked) {
                 player = document.getElementsByName("playerSelect")[i].value;
                 selectedPlayer = document.getElementsByName("playerSelect")[i].value;
-                selectedPlayer = (selectedPlayer === "X") ? aiPlayer = "O" : aiPlayer = "X";
+                aiPlayer = (selectedPlayer === "X") ? "O" : "X";
                 document.getElementById("player").innerHTML = selectedPlayer;
             }
         }
         for (i=0; i<document.getElementsByName("difficulty").length; i++) {
             if (document.getElementsByName("difficulty")[i].checked) {
-                setDifficulty(document.getElementsByName("difficulty")[i].value);
+                difficulty = document.getElementsByName("difficulty")[i].value;
             }
         }
     } else {
@@ -241,12 +261,25 @@ function playerDifficulty() {
         document.getElementsByClassName("break")[0].style.color = "red";
     }
 }
-//TODO: change this code. The functions are supposed to be called evrytime the ai is taking the turn.
-function setDifficulty (diff) {
-    difficulty = diff;
-    switch (diff) {
+
+/*
+-------------------------------AI CODE BELOW-------------------------------------------------------------------
+*/
+
+var pathAndScore = [];
+
+var scoreNum = 0;
+
+function aiTurn() {
+    switch (difficulty) {
         case "easy":
-            easySelect();
+            var getBoard = document.getElementsByClassName("cellPart");
+            var aiSelected = easySelect();
+            for(i=0; i<getBoard.length; i++) {
+                if(getBoard[i].value === aiSelected) {
+                    cellClicked(getBoard[i]);
+                }
+            }
             break;
         case "normal":
             normalSelect();
@@ -256,13 +289,6 @@ function setDifficulty (diff) {
             break;
     }
 }
-/*
--------------------------------AI CODE BELOW-------------------------------------------------------------------
-*/
-
-var pathAndScore = [];
-
-var scoreNum = 0;
 
 function pathAI () {
     var score = 0;
@@ -273,21 +299,23 @@ function easySelect () {
     var emptyCells = [];
     var selectedCell;
     //This part will cycle through all the cells and put the empty cells in the array above with the corresponding cell value.
-    for (i=0; i<cellClicked.length; i++) {
+    for (i=0; i<3; i++) {
         for(j=0; j<3; j++) {
-            if (cellClicked[0][i][j] === 0) {
-                emptyCells.push([cellClickedArray[1][i][j]]);
+            if (cellClickedArray[0][i][j] === 0) {
+                emptyCells.push(cellClickedArray[1][i][j]);
             }
         }
     }
-    selectedCell = emptyCells[Math.floor(Math.random * emptyCells.length)];
+    var num = Math.floor(Math.random() * emptyCells.length);
+    
+    selectedCell = emptyCells[num];
     return selectedCell;
 }
-
+/*
 function normalSelect () {
-    for (i=0; i<cellClicked.length; i++) {
+    for (i=0; i<cellClickedArray.length; i++) {
         for(j=0; j<3; j++) {
-            switch (cellClicked[0][i][j]) {
+            switch (cellClickedArray[0][i][j]) {
                 case 0:
 
             }
@@ -296,12 +324,13 @@ function normalSelect () {
 }
 
 function hardSelect () {
-    for (i=0; i<cellClicked.length; i++) {
+    for (i=0; i<cellClickedArray.length; i++) {
         for(j=0; j<3; j++) {
-            switch (cellClicked[0][i][j]) {
+            switch (cellClickedArray[0][i][j]) {
                 case 0:
 
             }
         }
     }
 }
+*/
