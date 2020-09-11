@@ -94,8 +94,8 @@ function cellClicked(cell) {
         switch (cell.value) {
             case 10:
                 if (player === "X") {
-                    cellClickedArray[0][0] = 1;
-                } else {cellClickedArray[0][0] = 2;}
+                    cellClickedArray[0][0][0] = 1;
+                } else {cellClickedArray[0][0][0] = 2;}
                 break;
             case 11:
                 if (player === "X") {
@@ -145,9 +145,6 @@ function cellClicked(cell) {
         //Changes the "Player _ Go!" to the appropriate turn.
         document.getElementById("player").innerHTML = player;
         
-        /*
-------------------------------------TODO: MAKE LOADING BAR AND THE REST OF AI----------------------------------------------------
-        */
        if (aiPlayer === player) {
         setTimeout(aiTurn, 1000);
        }
@@ -266,10 +263,6 @@ function playerDifficulty() {
 -------------------------------AI CODE BELOW-------------------------------------------------------------------
 */
 
-var pathAndScore = [];
-
-var scoreNum = 0;
-
 function aiTurn() {
     switch (difficulty) {
         case "easy":
@@ -311,26 +304,149 @@ function easySelect () {
     selectedCell = emptyCells[num];
     return selectedCell;
 }
-/*
-function normalSelect () {
-    for (i=0; i<cellClickedArray.length; i++) {
-        for(j=0; j<3; j++) {
-            switch (cellClickedArray[0][i][j]) {
-                case 0:
 
-            }
-        }
-    }
-}
 
 function hardSelect () {
-    for (i=0; i<cellClickedArray.length; i++) {
-        for(j=0; j<3; j++) {
-            switch (cellClickedArray[0][i][j]) {
-                case 0:
-
+    let game = new aiPath();
+    let gameBoard = [];
+    let ba = [];
+    let bb = [];
+    let bc = [];
+    for (i = 0; i<3; i++) {
+        for (j=0; j<3; j++) {
+            if (i == 0) {
+                ba.push(cellClickedArray[0][i][j]);
+            } else if (i == 1) {
+                bb.push(cellClickedArray[0][i][j]);
+            } else if (i == 2) {
+                bc.push(cellClickedArray[0][i][j]);
             }
         }
     }
+    gameBoard.push(ba, bb, bc);
+    console.log(game.bestMove(gameBoard));
+    console.log(game.nodeMap);
 }
-*/
+
+class aiPath {
+    constructor (maxDepth = -1) {
+        this.maxDepth = maxDepth;
+        this.nodeMap = new Map();
+        this.j = 0;
+        this.s = 0;
+    }
+    bestMove(board, max = true, callBack = () => {}, depth = 0) {
+
+        if (depth == 0 ) {
+            this.nodeMap.clear();
+        }
+        
+        let valu = checkforWin(board);
+        if (valu[0] == true || depth == this.maxDepth) {
+            if (valu[1] === 1) {
+                return 100 - depth;
+            } else if (valu[1] === 2) {
+                return -100 + depth;
+            }
+            return 0;
+        }
+        if (max) {
+            let best = -100;
+            board.forEach(function (index, i) {
+                for (let x = 0; x < 3; x++) {
+                    if(index[x] == 0) {
+                        let child = board.slice();
+                        //the for each will return an index number of the 2d array but it is combined into a string
+                        child[i][x] = 1;
+                        //TODO: fix bottom. is undefined for some reason
+                        let nodeVal = this.bestMove(child, false, callBack, depth + 1);
+                        best = Math.max(best, nodeVal);
+                        break;
+                    }
+                }
+                if (depth == 0) {
+                    console.log("here3");
+                    var moves = this.nodeMap.has(nodeVal) ? `${this.nodeMap.get(nodeVal)}.${index}` : index;
+                    console.log("here4");
+                    this.nodeMap.set(nodeVal, moves);
+                    console.log("here5");
+                }
+
+            });
+
+            if (depth == 0) {
+                if (typeof this.nodeMap.get(best) == 'string') {
+                    console.log("here6");
+                    var arr = this.nodeMap.get(best).split('.');
+                    var rand = Math.floor(Math.random() * arr.length);
+                    var ret = arr[rand];
+                } else {
+                    console.log("here7");
+                    ret = this.nodeMap.get(best);
+                }
+                callBack(ret);
+                return ret;
+            }
+
+            return best;       
+        }
+        if (!max) {
+            let best = 100;
+            board.forEach(function (index, i) {
+                for (let x=0;x<3;x++) {
+                    if(index[x] == 0) {
+                        let child = board.slice();
+                        //the for each will return an index number of the 2d array but it is combined into a string
+                        child[i][x] = 2;
+                        console.log(child);
+                        let nodeVal = this.bestMove(child, true, callBack, depth + 1);
+                        console.log("here9");
+                        best = Math.min(best, nodeVal);
+                        break;
+                    }
+                }
+                if (depth == 0) {
+                    console.log("here10");
+                    var moves = this.nodeMap.has(nodeVal) ? this.nodeMap.get(nodeVal) +'.' + index : index;
+                    console.log("here11");
+                    this.nodeMap.set(nodeVal, moves);
+                    console.log("here12");
+                }
+            });
+            //If it's the main call, return the index of the best move or a random index if multiple indicies have the same value
+			if(depth == 0) {
+				if(typeof this.nodesMao.get(best) == 'string') {
+                    console.log("here13");
+					var arr = this.nodeMap.get(best).split('.');
+					var rand = Math.floor(Math.random() * arr.length);
+                    var ret = arr[rand];
+                    console.log("here14");
+				} else {
+                    console.log("here15");
+					ret = this.nodeMap.get(best);
+				}
+				//run a callback after calculation and return the index
+				callback(ret);
+				return ret;
+			}
+			//If not main call (recursive) return the heuristic value for next calculation
+			return best;
+        }
+    } 
+}
+//    [[0, 0, 0],
+  //   [0, 0, 0],
+    // [0, 0, 0]]
+
+//[[0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 4, 8], [2, 4, 6]]
+function checkforWin(board) {
+    for ( i = 0; i < winSets.length; i++) {
+        if (board[winSets[i][0]] == board[winSets[i][1]] 
+            && board[winSets[i][1]] == board[winSets[i][2]] 
+            && board[winSets[i][0]] != 0) {  
+                return [true, board[winSets[i][0].innerHTML]];
+        } else {
+            return [false, null];
+        }
+    }
+}
