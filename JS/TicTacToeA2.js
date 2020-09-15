@@ -146,7 +146,10 @@ function cellClicked(cell) {
         document.getElementById("player").innerHTML = player;
         
        if (aiPlayer === player) {
-        setTimeout(aiTurn, 1000);
+        if (!checkWin()){
+            setTimeout(aiTurn, 100);
+        }
+        checkWin();
        }
     }
 }
@@ -169,7 +172,7 @@ function checkWin() {
                 winner = player;
                 sendPHP();
                 displayWin(true);
-                break;
+                return true;
         }
     }
     //Displays message for no one winning
@@ -178,6 +181,7 @@ function checkWin() {
         message.style.display = 'block';
         winner.innerHTML = "No one wins! :(";
         displayWin(true);
+        return true;
     } 
 }
 //Event listener for reset game button
@@ -266,11 +270,10 @@ function playerDifficulty() {
 function aiTurn() {
     switch (difficulty) {
         case "easy":
-            var getBoard = document.getElementsByClassName("cellPart");
             var aiSelected = easySelect();
             for(i=0; i<getBoard.length; i++) {
-                if(getBoard[i].value === aiSelected) {
-                    cellClicked(getBoard[i]);
+                if(board[i].value === aiSelected) {
+                    cellClicked(board[i]);
                 }
             }
             break;
@@ -282,12 +285,6 @@ function aiTurn() {
             break;
     }
 }
-
-function pathAI () {
-    var score = 0;
-    return score;
-}
-
 function easySelect () {
     var emptyCells = [];
     var selectedCell;
@@ -305,44 +302,52 @@ function easySelect () {
     return selectedCell;
 }
 
+function normalSelect () {
+
+}
 
 function hardSelect () {
     let game = new aiPath();
+    if (selectedPlayer == "X") {
+        cellClicked(board[game.bestMove(convertBoard(), false)]);
+        console.log(game.bestMove(convertBoard(), false));
+    } else {
+        cellClicked(board[game.bestMove(convertBoard(), true)]);
+        console.log(game.bestMove(convertBoard(), true));
+    }
+    
+}
+
+function convertBoard() {
     let gameBoard = [];
-    let ba = [];
-    let bb = [];
-    let bc = [];
     for (i = 0; i<3; i++) {
         for (j=0; j<3; j++) {
             if (i == 0) {
-                ba.push(cellClickedArray[0][i][j]);
+                gameBoard.push(cellClickedArray[0][i][j]);
             } else if (i == 1) {
-                bb.push(cellClickedArray[0][i][j]);
+                gameBoard.push(cellClickedArray[0][i][j]);
             } else if (i == 2) {
-                bc.push(cellClickedArray[0][i][j]);
+                gameBoard.push(cellClickedArray[0][i][j]);
             }
         }
     }
-    gameBoard.push(ba, bb, bc);
-    console.log(game.bestMove(gameBoard));
-    console.log(game.nodeMap);
+    return gameBoard;
 }
 
 class aiPath {
     constructor (maxDepth = -1) {
         this.maxDepth = maxDepth;
         this.nodeMap = new Map();
-        this.j = 0;
-        this.s = 0;
     }
-    bestMove(board, max = true, callBack = () => {}, depth = 0) {
-
+    
+    bestMove(board, max, callback = () => {}, depth = 0) {
+        
         if (depth == 0 ) {
             this.nodeMap.clear();
         }
         
         let valu = checkforWin(board);
-        if (valu[0] == true || depth == this.maxDepth) {
+        if (valu[0] == true || depth == this.maxDepth || checkTie(board) == true) {
             if (valu[1] === 1) {
                 return 100 - depth;
             } else if (valu[1] === 2) {
@@ -350,41 +355,32 @@ class aiPath {
             }
             return 0;
         }
+
         if (max) {
             let best = -100;
-            board.forEach(function (index, i) {
-                for (let x = 0; x < 3; x++) {
-                    if(index[x] == 0) {
-                        let child = board.slice();
-                        //the for each will return an index number of the 2d array but it is combined into a string
-                        child[i][x] = 1;
-                        //TODO: fix bottom. is undefined for some reason
-                        let nodeVal = this.bestMove(child, false, callBack, depth + 1);
-                        best = Math.max(best, nodeVal);
-                        break;
+            board.forEach((val, i) => {
+                let child = board.slice();
+                if (child [i] == 0) {
+                    child[i] = 1;
+                    let newDepth = depth + 1;
+                    let nodeVal = this.bestMove(child, false, callback, newDepth);
+                    best = Math.max(best, nodeVal);
+                    if (depth == 0) {
+                        var moves = this.nodeMap.has(nodeVal) ? `${this.nodeMap.get(nodeVal)}.${i}` : i;
+                        this.nodeMap.set(nodeVal, moves);
                     }
                 }
-                if (depth == 0) {
-                    console.log("here3");
-                    var moves = this.nodeMap.has(nodeVal) ? `${this.nodeMap.get(nodeVal)}.${index}` : index;
-                    console.log("here4");
-                    this.nodeMap.set(nodeVal, moves);
-                    console.log("here5");
-                }
-
-            });
+            }); 
 
             if (depth == 0) {
                 if (typeof this.nodeMap.get(best) == 'string') {
-                    console.log("here6");
                     var arr = this.nodeMap.get(best).split('.');
                     var rand = Math.floor(Math.random() * arr.length);
                     var ret = arr[rand];
                 } else {
-                    console.log("here7");
                     ret = this.nodeMap.get(best);
                 }
-                callBack(ret);
+                callback(ret);
                 return ret;
             }
 
@@ -392,37 +388,26 @@ class aiPath {
         }
         if (!max) {
             let best = 100;
-            board.forEach(function (index, i) {
-                for (let x=0;x<3;x++) {
-                    if(index[x] == 0) {
-                        let child = board.slice();
-                        //the for each will return an index number of the 2d array but it is combined into a string
-                        child[i][x] = 2;
-                        console.log(child);
-                        let nodeVal = this.bestMove(child, true, callBack, depth + 1);
-                        console.log("here9");
-                        best = Math.min(best, nodeVal);
-                        break;
+            board.forEach((val, i) => {
+                let child = board.slice();
+                if (child[i] == 0){
+                    child[i] = 2;
+                    let newDepth = depth + 1;
+                    let nodeVal = this.bestMove(child, true, callback, newDepth);
+                    best = Math.min(best, nodeVal);
+                    if (depth == 0) {
+                        var moves = this.nodeMap.has(nodeVal) ? this.nodeMap.get(nodeVal) +'.' + i : i;
+                        this.nodeMap.set(nodeVal, moves);
                     }
-                }
-                if (depth == 0) {
-                    console.log("here10");
-                    var moves = this.nodeMap.has(nodeVal) ? this.nodeMap.get(nodeVal) +'.' + index : index;
-                    console.log("here11");
-                    this.nodeMap.set(nodeVal, moves);
-                    console.log("here12");
                 }
             });
             //If it's the main call, return the index of the best move or a random index if multiple indicies have the same value
 			if(depth == 0) {
-				if(typeof this.nodesMao.get(best) == 'string') {
-                    console.log("here13");
+				if(typeof this.nodeMap.get(best) == 'string') {
 					var arr = this.nodeMap.get(best).split('.');
 					var rand = Math.floor(Math.random() * arr.length);
                     var ret = arr[rand];
-                    console.log("here14");
 				} else {
-                    console.log("here15");
 					ret = this.nodeMap.get(best);
 				}
 				//run a callback after calculation and return the index
@@ -434,19 +419,34 @@ class aiPath {
         }
     } 
 }
-//    [[0, 0, 0],
-  //   [0, 0, 0],
-    // [0, 0, 0]]
 
-//[[0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 4, 8], [2, 4, 6]]
 function checkforWin(board) {
-    for ( i = 0; i < winSets.length; i++) {
-        if (board[winSets[i][0]] == board[winSets[i][1]] 
-            && board[winSets[i][1]] == board[winSets[i][2]] 
-            && board[winSets[i][0]] != 0) {  
-                return [true, board[winSets[i][0].innerHTML]];
+        if(board[0] == board[1] && board[0] == board[2] && board[0] != 0) {
+            return [true, board[0]];
+        } else if(board[3] == board[4] && board[3] == board[5] && board[3] != 0) {
+            return [true, board[3]];
+        } else if(board[6] == board[7] && board[6] == board[8] && board[6] != 0) {
+            return [true, board[6]];
+        } else if(board[0] == board[3] && board[0] == board[6] && board[0] != 0) {
+            return [true, board[0]];
+        } else if(board[1] == board[4] && board[1] == board[7] && board[1] != 0) {
+            return [true, board[1]];
+        } else if(board[2] == board[5] && board[2] == board[8] && board[2] != 0) {
+            return [true, board[2]];
+        } else if(board[0] == board[4] && board[0] == board[8] && board[0] != 0) {
+            return [true, board[0]];
+        } else if(board[2] == board[4] && board[2] == board[6] && board[2] != 0) {
+            return [true, board[2]];
         } else {
             return [false, null];
         }
+} 
+
+function checkTie(board) {
+    for (let i=0;i<board.length;i++) {
+        if (board[i] == 0) {
+            return false;
+        }
     }
+    return true;
 }
