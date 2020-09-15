@@ -66,6 +66,7 @@ function resetGame() {
     player = selectedPlayer;
     gameOver = false;
     empty = 9;
+    winner ="";
     //sets the cellClickedArray to the initial values
     cellClickedArray = [
                   [[0, 0, 0],
@@ -142,7 +143,7 @@ function cellClicked(cell) {
                 break;
         }
         // Each time an appropriate cell is clicked, function checkWin() runs and sees if there is a win.
-        checkWin(); 
+        setTimeout(checkWin, 100); 
         //Like an if statement, it checks if the player is "X". If it is true it changes to "O". I false it changes to "X".   
         player = (player === "X") ? "O" : "X";
         //Changes the "Player _ Go!" to the appropriate turn.
@@ -150,12 +151,10 @@ function cellClicked(cell) {
         //ai goes if its the ai's turn
         if (aiPlayer === player) {
             //If there is a win, the ai wont go
-            if (!checkWin()){
+            if (checkforWin(convertBoard())[0] == false){
                 //slight delay just in case it goes too quick and messes up the turn
                 setTimeout(aiTurn, 100);
             }
-            //checks win after ai puts down its respons
-            checkWin();
         }
     }
 }
@@ -174,8 +173,8 @@ function checkWin() {
             && board[winSets[i][0]].innerHTML != "") {  
                 message.style.display = 'block';
                 gameOver = true;
-                winner.innerHTML = player+" Wins!";
-                winner = player;
+                winner.innerHTML = board[winSets[i][0]].innerHTML+" Wins!";
+                winner = board[winSets[i][0]].innerHTML;
                 sendPHP();
                 displayWin(true);
                 return true;
@@ -311,7 +310,7 @@ function easySelect () {
 }
 //60 percent of the time, it will make the proper choice, but 40 percent of the time will be a random choice
 function normalSelect () {
-    let randNum = Math.floor(Math.random * 101);
+    let randNum = Math.floor(Math.random() * 101);
     if (randNum <= 60) {
         hardSelect();
     } else {
@@ -323,10 +322,8 @@ function hardSelect () {
     let game = new aiPath();
     if (selectedPlayer == "X") {
         cellClicked(board[game.bestMove(convertBoard(), false)]);
-        console.log(game.bestMove(convertBoard(), false));
     } else {
         cellClicked(board[game.bestMove(convertBoard(), true)]);
-        console.log(game.bestMove(convertBoard(), true));
     }
     
 }
