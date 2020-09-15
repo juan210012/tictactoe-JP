@@ -1,6 +1,6 @@
 /* 
 Name: Juan Estupinan
-Student Number: 991593151
+Version: 1.0
 */
 // Gets element by message ID
 var message = document.getElementsByName("message")[0];
@@ -12,7 +12,7 @@ var board = document.getElementsByClassName("cellPart");
 // assuming we index the 9 tic tac toe cells from left to right, top to
 // bottom, as 0-8, these would be all of the winning combinations:
 var winSets = [[0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 4, 8], [2, 4, 6]];
-//0 if empty, 1 if X, 2 if O
+//0 if empty, 1 if X, 2 if O. Corresponds with the html values of each cell
 let cellClickedArray = [
     [[0, 0, 0],
      [0, 0, 0],
@@ -22,20 +22,23 @@ let cellClickedArray = [
      [30, 31, 32]]
     ];
 
-// X always gets to go first
+// Player parameters
+//current player
 var player;
+//user selected player
 var selectedPlayer;
+//ai player
 var aiPlayer;
+//winner
 var winner;
 
 // keep track of how many cells are empty at any time
 var empty = 9;
-
 // keep track of game status - false if still playing
 var gameOver = false;
-
+//keep track of game difficulty selected
 var difficulty;
-
+//For some reason the HTML doc does not put the values in correctly and is not reading properly, so it sets it when the page loads.
 var boardVals = 10;
 for (i=0;i<board.length;i++) {
     board[i].value = boardVals;
@@ -63,6 +66,7 @@ function resetGame() {
     player = selectedPlayer;
     gameOver = false;
     empty = 9;
+    //sets the cellClickedArray to the initial values
     cellClickedArray = [
                   [[0, 0, 0],
                    [0, 0, 0],
@@ -89,8 +93,7 @@ function cellClicked(cell) {
     if (cell.innerHTML === "" && empty >= 0 && gameOver === false) {
         cell.innerHTML = player;
         empty -= 1;
-        //look at this
-        
+        //Below gets the value of the cell and puts the correct number in the cellClickedArray
         switch (cell.value) {
             case 10:
                 if (player === "X") {
@@ -144,13 +147,16 @@ function cellClicked(cell) {
         player = (player === "X") ? "O" : "X";
         //Changes the "Player _ Go!" to the appropriate turn.
         document.getElementById("player").innerHTML = player;
-        
-       if (aiPlayer === player) {
-        if (!checkWin()){
-            setTimeout(aiTurn, 100);
+        //ai goes if its the ai's turn
+        if (aiPlayer === player) {
+            //If there is a win, the ai wont go
+            if (!checkWin()){
+                //slight delay just in case it goes too quick and messes up the turn
+                setTimeout(aiTurn, 100);
+            }
+            //checks win after ai puts down its respons
+            checkWin();
         }
-        checkWin();
-       }
     }
 }
 
@@ -231,6 +237,7 @@ function sendPHP() {
 /*
 -------------------------------Difficulty Selector Code --------------------------------------------------------
 */
+//event listener for changing difficulty.
 document.getElementById("changeDiff").addEventListener("click", function () {
     document.getElementsByClassName("container2")[0].style.visibility = "visible";
     document.getElementById("overlay").style.display = "block";
@@ -239,43 +246,38 @@ document.getElementById("changeDiff").addEventListener("click", function () {
 
 document.getElementById("confirm").addEventListener("click", playerDifficulty);
 function playerDifficulty() {
+    //will only allow to play the game if a player and difficulty has been selected
     if ((document.getElementById("Xselect").checked == true || document.getElementById("Oselect").checked == true) 
         && (document.getElementById("easy").checked == true || document.getElementById("normal").checked == true ||
         document.getElementById("hard").checked == true)) {
-        document.getElementsByClassName("container2")[0].style.visibility = "hidden";
-        document.getElementById("overlay").style.display = "none";
-        for (i=0; i<document.getElementsByName("playerSelect").length; i++) {
-            if (document.getElementsByName("playerSelect")[i].checked) {
-                player = document.getElementsByName("playerSelect")[i].value;
-                selectedPlayer = document.getElementsByName("playerSelect")[i].value;
-                aiPlayer = (selectedPlayer === "X") ? "O" : "X";
-                document.getElementById("player").innerHTML = selectedPlayer;
+            document.getElementsByClassName("container2")[0].style.visibility = "hidden";
+            document.getElementById("overlay").style.display = "none";
+            //sets the vars and messgaes for players in game
+            for (i=0; i<document.getElementsByName("playerSelect").length; i++) {
+                if (document.getElementsByName("playerSelect")[i].checked) {
+                    player = document.getElementsByName("playerSelect")[i].value;
+                    selectedPlayer = document.getElementsByName("playerSelect")[i].value;
+                    aiPlayer = (selectedPlayer === "X") ? "O" : "X";
+                    document.getElementById("player").innerHTML = selectedPlayer;
+                }
             }
-        }
-        for (i=0; i<document.getElementsByName("difficulty").length; i++) {
-            if (document.getElementsByName("difficulty")[i].checked) {
-                difficulty = document.getElementsByName("difficulty")[i].value;
+            //sets the difficulty var
+            for (i=0; i<document.getElementsByName("difficulty").length; i++) {
+                if (document.getElementsByName("difficulty")[i].checked) {
+                    difficulty = document.getElementsByName("difficulty")[i].value;
+                }
             }
-        }
     } else {
+        //will get error message if no selection is made
         document.getElementsByClassName("break")[0].innerHTML = "Please Select a Player and Difficulty";
         document.getElementsByClassName("break")[0].style.color = "red";
     }
 }
-
-/*
--------------------------------AI CODE BELOW-------------------------------------------------------------------
-*/
-
+//Selects which difficulty ai code to execute
 function aiTurn() {
     switch (difficulty) {
         case "easy":
-            var aiSelected = easySelect();
-            for(i=0; i<getBoard.length; i++) {
-                if(board[i].value === aiSelected) {
-                    cellClicked(board[i]);
-                }
-            }
+            easySelect();
             break;
         case "normal":
             normalSelect();
@@ -285,6 +287,7 @@ function aiTurn() {
             break;
     }
 }
+//Picks a random cell
 function easySelect () {
     var emptyCells = [];
     var selectedCell;
@@ -299,13 +302,23 @@ function easySelect () {
     var num = Math.floor(Math.random() * emptyCells.length);
     
     selectedCell = emptyCells[num];
-    return selectedCell;
-}
 
+    for(i=0; i<board.length; i++) {
+        if(board[i].value === selectedCell) {
+            cellClicked(board[i]);
+        }
+    }
+}
+//60 percent of the time, it will make the proper choice, but 40 percent of the time will be a random choice
 function normalSelect () {
-
+    let randNum = Math.floor(Math.random * 101);
+    if (randNum <= 60) {
+        hardSelect();
+    } else {
+        easySelect();
+    }
 }
-
+//Makes the best available choice
 function hardSelect () {
     let game = new aiPath();
     if (selectedPlayer == "X") {
@@ -317,7 +330,7 @@ function hardSelect () {
     }
     
 }
-
+//converts from 3d to 1d for the aiPath class
 function convertBoard() {
     let gameBoard = [];
     for (i = 0; i<3; i++) {
@@ -333,19 +346,40 @@ function convertBoard() {
     }
     return gameBoard;
 }
+/*
+-------------------------------AI CODE BELOW-------------------------------------------------------------------
+The following code is the result of not knowing what to do. 
+I attempted this project knowing that there is a possibility I might not be able to complete the ai.
+I tried my best to understand different methods of attempting this but unfortunately I came accross a dead end.
+Eventually I gave up and looked up other projects similar to mine.
+I took inspiration from "Tic-Tac-Toe with Javascript ES2015: AI Player with Minimax Algorithm" by Ali Alaa from medium.com
+https://medium.com/@alialaa/tic-tac-toe-with-javascript-es2015-ai-player-with-minimax-algorithm-59f069f46efa
 
+I took most of his code and adjusted to my code that I had already written.
+The main premise behind the code is that it takes the current board and it recursively calls its functions and makes a map
+of the best moves possible.
+There is a min and max score that corresponds to X or O and each play letter has to achieve the highest or lowest score depending on
+set parameters.
+In this case O is min and X is max.
+It will recursively look at win scenarios with each additional move adding depth.
+You want to be as close to the min or max score of -100 or 100 respectively and the depth adds or substracts 1 each depth level.
+Essentially, make the best moves in as little moves as possible.
+It will then throw back an index number of the best possible move for the ai.
+This was a very good learning experience and the result of this project greatly deepened my understanding of Javascript.
+*/
 class aiPath {
+    //initial parameters set everytime a new aiPath object is created
     constructor (maxDepth = -1) {
         this.maxDepth = maxDepth;
         this.nodeMap = new Map();
     }
-    
+    //best move function accepts the board (1d) and if its max (true) or not (false). Callback is null for now and depth is 0
     bestMove(board, max, callback = () => {}, depth = 0) {
-        
+        //if its the start, then clear anything from the nodeMap
         if (depth == 0 ) {
             this.nodeMap.clear();
         }
-        
+        //checks win or tie and returns the appropriate values. will return zero if tie
         let valu = checkforWin(board);
         if (valu[0] == true || depth == this.maxDepth || checkTie(board) == true) {
             if (valu[1] === 1) {
@@ -355,16 +389,24 @@ class aiPath {
             }
             return 0;
         }
-
+        //if max turn then code executes
         if (max) {
             let best = -100;
+            //goes through the board and the value (val) and index (i) is used
             board.forEach((val, i) => {
+                //current board is coppied to child
                 let child = board.slice();
+                //if the possition on the board is 0 (empty), then execute code
                 if (child [i] == 0) {
+                    //sets the position to 1 ("X")
                     child[i] = 1;
+                    //adds depth
                     let newDepth = depth + 1;
+                    //nodeval stores the score of the next turn with the new depth
                     let nodeVal = this.bestMove(child, false, callback, newDepth);
+                    //compares nodeVal score and best score to see with is better (max is the highest score possible)
                     best = Math.max(best, nodeVal);
+                    //sets the nodemap with the score and index values
                     if (depth == 0) {
                         var moves = this.nodeMap.has(nodeVal) ? `${this.nodeMap.get(nodeVal)}.${i}` : i;
                         this.nodeMap.set(nodeVal, moves);
@@ -373,6 +415,7 @@ class aiPath {
             }); 
 
             if (depth == 0) {
+                //If it's the main call, return the index of the best move or a random index if multiple indicies have the same value
                 if (typeof this.nodeMap.get(best) == 'string') {
                     var arr = this.nodeMap.get(best).split('.');
                     var rand = Math.floor(Math.random() * arr.length);
@@ -380,12 +423,14 @@ class aiPath {
                 } else {
                     ret = this.nodeMap.get(best);
                 }
+                //run a callback after calculation and return the index
                 callback(ret);
                 return ret;
             }
-
+            //If not main call (recursive) return the heuristic value for next calculation
             return best;       
         }
+        //same as the max but reversed (2 or "O" instead of 1 or "X"; bestMove is true; its Math.min instead of Math.max)
         if (!max) {
             let best = 100;
             board.forEach((val, i) => {
@@ -419,7 +464,7 @@ class aiPath {
         }
     } 
 }
-
+//Functions needed for the ai to work.
 function checkforWin(board) {
         if(board[0] == board[1] && board[0] == board[2] && board[0] != 0) {
             return [true, board[0]];
@@ -441,7 +486,6 @@ function checkforWin(board) {
             return [false, null];
         }
 } 
-
 function checkTie(board) {
     for (let i=0;i<board.length;i++) {
         if (board[i] == 0) {
